@@ -2,7 +2,7 @@
 ### 1. Запуск Лабораторної №7 RabbitMQ через Docker
 Спочатку перейти в директорію:
 ```bash
-cd C:\Users\Дмитро\Desktop\lab7_event_architecture
+cd D:\lab7
 ```
 Запустити докер:
 ```bash
@@ -17,17 +17,11 @@ docker compose up
 
 ---
 
-### 2. Створення та активація віртуального середовища
-
-```bash
-python -m venv venv
-```
+### 2. Aктивація віртуального середовища
 
 ```bash
 source venv/Scripts/activate
 ```
-
----
 
 ### 3. Встановлення необхідних залежностей
 
@@ -43,24 +37,24 @@ pip install -r requirements.txt
 
 ---
 
-### Термінал 1 — запуск **message\_sender.py** (бот: `EventPublisherBot`)
+### Термінал 1 — запуск **sender_bot.py** (бот: `EventPublisherBot`)
 
 ```bash
 source venv/Scripts/activate
 ```
 ```bash
-python message_sender.py
+python sender_bot.py
 ```
 
 ---
 
-### Термінал 2 — запуск **message\_receiver.py** (бот: `EventListenerBot`)
+### Термінал 2 — запуск **receiver_bot.py** (бот: `EventListenerBot`)
 
 ```bash
 source venv/Scripts/activate
 ```
 ```bash
-python message_receiver.py
+python receiver_bot.py
 ```
 
 ---
