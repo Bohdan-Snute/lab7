@@ -1,8 +1,46 @@
+### 1. Запуск Лабораторної №3 Docker
+
+Спочатку перейти в директорію:
+```bash
+cd C:\Users\Дмитро\Desktop\Lab3\docker_lab03
+```
+Запустити команду для побудови і запуску контейнерів у фоновому режимі:
+```bash
+docker compose up -d
+```
+Перевірити, що всі сервіси працюють:
+```bash
+docker compose ps
+```
+frontend має бути доступний щоб перевірити в браузері:
+```bash
+http://localhost:1125
+```
+показує сторінку з Nginx
+```bash
+backend: http://localhost:8080
+```
+ API-відповідь з Flask (JSON)
+
+
+Якщо Виникли проблеми потрібно з нуля:
+```bash
+docker compose down
+```
+```bash
+docker compose up --build -d
+```
+І тоді перевірка в браузері.
+
+Щоб зупинити сервіси:
+```bash
+docker compose down
+```
 
 ### 1. Запуск Лабораторної №7 RabbitMQ через Docker
 Спочатку перейти в директорію:
 ```bash
-cd D:\lab7
+cd C:\Users\Дмитро\Desktop\lab7_event_architecture
 ```
 Запустити докер:
 ```bash
@@ -17,11 +55,17 @@ docker compose up
 
 ---
 
-### 2. Aктивація віртуального середовища
+### 2. Створення та активація віртуального середовища
+
+```bash
+python -m venv venv
+```
 
 ```bash
 source venv/Scripts/activate
 ```
+
+---
 
 ### 3. Встановлення необхідних залежностей
 
@@ -37,24 +81,24 @@ pip install -r requirements.txt
 
 ---
 
-### Термінал 1 — запуск **sender_bot.py** (бот: `EventPublisherBot`)
+### Термінал 1 — запуск **message\_sender.py** (бот: `EventPublisherBot`)
 
 ```bash
 source venv/Scripts/activate
 ```
 ```bash
-python sender_bot.py
+python message_sender.py
 ```
 
 ---
 
-### Термінал 2 — запуск **receiver_bot.py** (бот: `EventListenerBot`)
+### Термінал 2 — запуск **message\_receiver.py** (бот: `EventListenerBot`)
 
 ```bash
 source venv/Scripts/activate
 ```
 ```bash
-python receiver_bot.py
+python message_receiver.py
 ```
 
 ---
@@ -95,3 +139,150 @@ lab7-event-architecture/
 docker compose down
 ```
 
+   > Це безпечно завершить роботу всіх компонентів (Elasticsearch, Fluentd, Kibana) і видалить контейнери, зберігаючи при цьому дані у volume-ах.
+
+---
+
+
+# 📡 Моніторинг із Prometheus + Grafana + Telegram Bot
+
+Цей репозиторій демонструє, як запустити моніторинг системи за допомогою **Prometheus**, **Grafana** та **Telegram-бота**, який видає метрики на `/metrics`.
+
+---
+
+## 🔧 1. Запуск Prometheus + Grafana
+
+1. Перейдіть у директорію з `docker-compose.yml`:
+
+   ```bash
+   cd ./prometheus-lab/PrometheusLab
+  ```
+````
+
+2. Запустіть контейнери:
+
+   ```bash
+   docker compose up
+   ```
+
+3. Переконайтесь, що сервіси доступні:
+
+   * 🔗 Prometheus: [http://127.0.0.1:9090](http://127.0.0.1:9090)
+   * 📊 Grafana: [http://127.0.0.1:3000](http://127.0.0.1:3000)
+
+---
+
+## 🤖 2. Запуск Telegram-бота з метриками
+
+1. Перейдіть у директорію бота:
+
+   
+Bash
+   ```bash
+   cd ./telegram_bot
+   ```
+
+2. Якщо ще немає віртуального середовища, створіть і активуйте його:
+
+   
+Bash
+   ```bash
+   python -m venv venv
+   source venv/Scripts/activate  # або source venv/bin/activate на Linux/macOS
+   pip install -r requirements.txt
+   ```
+
+3. Запустіть бота:
+
+   
+Bash
+   ```bash
+   python bot.py
+   ```
+
+4. Перевірте метрики:
+
+   * 📈 Відкрий у браузері: [http://127.0.0.1:9091/metrics](http://127.0.0.1:9091/metrics)
+   * Ви побачите щось на кшталт:
+
+     
+
+     # HELP received_messages_total Total number of received Telegram messages
+     # TYPE received_messages_total counter
+     received_messages_total 5.0
+     
+
+---
+
+## 📊 3. Налаштування Grafana
+
+1. Відкрий Grafana: [http://127.0.0.1:3000](http://127.0.0.1:3000)
+
+   * Логін: admin
+   * Пароль: admin
+
+2. Додай джерело даних (Data Source):
+
+   * Натисни: ☰ → Connections → Data Sources
+
+   * Обери: Add data source
+
+   * Тип: Prometheus
+
+   * URL:
+
+     
+
+     http://prometheus:9090
+     
+
+   * Натисни: Save & test
+
+---
+
+## 📈 4. Створення Dashboard у Grafana
+
+1. У Grafana натисни: Dashboards → New → Explore
+
+2. У полі Metrics введи:
+
+   
+
+   received_messages_total
+   
+
+3. Натисни Run Query, після цього:
+
+   * Add to dashboard → New panel
+   * Дай назву панелі
+   * Збережи Dashboard
+
+---
+
+## 🛑 5. Зупинка всіх сервісів
+
+### Зупинити Prometheus + Grafana
+
+Bash
+
+cd ./prometheus-lab/PrometheusLab
+docker compose down
+
+### Зупинити Telegram-бота
+
+* Натисни Ctrl + C у терміналі
+* Деактивуй середовище:
+
+  
+Bash
+
+  deactivate
+  
+
+---
+
+## 📎 Корисні посилання
+
+* 🔍 Prometheus: [http://127.0.0.1:9090](http://127.0.0.1:9090)
+* 📊 Grafana: [http://127.0.0.1:3000](http://127.0.0.1:3000)
+* 📈 Метрики бота: [http://127.0.0.1:9091/metrics](http://127.0.0.1:9091/metrics)
